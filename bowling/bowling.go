@@ -3,7 +3,8 @@ package bowling
 import "fmt"
 
 const StrikeScore = 10
-const MaxFrame = 10
+const MaxFrame = 12
+const LastFrame = 10
 const ErrNegativeFrameScore = "value must be positive or null"
 const ErrFrameSumInvalid = "tuple score limit should be <= %d"
 const ErrFrameOverflow = "len must be %d"
@@ -48,7 +49,7 @@ func GetFrameScore(game []Frame, index int) (int, error) {
 		return 0, nil
 	}
 
-	var frame = game[index]
+	frame := game[index]
 
 	if frame.firstThrow < 0 || frame.secondThrow < 0 {
 		return 0, fmt.Errorf(ErrNegativeFrameScore)
@@ -79,7 +80,7 @@ func GetScore(game []Frame) (int, error) {
 		return 0, fmt.Errorf(ErrFrameOverflow, MaxFrame)
 	}
 	score := 0
-	for index := range game {
+	for index := 0; index < LastFrame; index++ {
 		frameScore, frameErr := GetFrameScore(game, index)
 		if frameErr != nil {
 			return 0, frameErr

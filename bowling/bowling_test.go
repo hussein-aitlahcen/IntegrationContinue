@@ -16,33 +16,33 @@ func ensureValidScore(t *testing.T, input []Frame, expectedScore int, expectedEr
 }
 
 func TestScore(t *testing.T) {
-	input := []Frame{{9, 1}, {0, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}
+	input := []Frame{{9, 1}, {0, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {0, 0}, {0, 0}}
 	expected := 27
 	ensureValidScore(t, input, expected, nil)
 }
 
 func TestStrikeScore(t *testing.T) {
-	input := []Frame{{10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}}
-	expected := 270
+	input := []Frame{{10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}, {10, 0}}
+	expected := 300
 	ensureValidScore(t, input, expected, nil)
 
-	input = []Frame{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {10, 0}, {10, 0}}
+	input = []Frame{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {10, 0}, {10, 0}, {0, 0}, {0, 0}}
 	expected = 30
 	ensureValidScore(t, input, expected, nil)
 }
 
 func TestSpareScore(t *testing.T) {
-	input := []Frame{{5, 5}, {5, 3}, {5, 3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
+	input := []Frame{{5, 5}, {5, 3}, {5, 3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}
 	expected := 31
 	ensureValidScore(t, input, expected, nil)
 
-	input = []Frame{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {5, 5}, {5, 5}}
+	input = []Frame{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {5, 5}, {5, 5}, {0, 0}, {0, 0}}
 	expected = 25
 	ensureValidScore(t, input, expected, nil)
 }
 
 func TestScoreArraySize(t *testing.T) {
-	input := []Frame{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}
+	input := []Frame{{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {0, 0}, {0, 0}, {0, 0}}
 	expectedScore := 0
 	expectedError := fmt.Errorf(ErrFrameOverflow, MaxFrame)
 	ensureValidScore(t, input, expectedScore, expectedError)
@@ -53,15 +53,15 @@ func TestScoreArraySize(t *testing.T) {
 	ensureValidScore(t, input, expectedScore, expectedError)
 }
 
-func TestScoreValuesPositiveOrNull(t *testing.T) {
-	input := []Frame{{-1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}
+func TestNegativeScoreValue(t *testing.T) {
+	input := []Frame{{-1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {0, 0}, {0, 0}}
 	expectedScore := 0
 	expectedError := fmt.Errorf(ErrNegativeFrameScore)
 	ensureValidScore(t, input, expectedScore, expectedError)
 }
 
 func TestScoreTupleLimit(t *testing.T) {
-	input := []Frame{{10, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}}
+	input := []Frame{{10, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {0, 0}, {0, 0}}
 	expectedScore := 0
 	expectedError := fmt.Errorf(ErrFrameSumInvalid, StrikeScore)
 	ensureValidScore(t, input, expectedScore, expectedError)
