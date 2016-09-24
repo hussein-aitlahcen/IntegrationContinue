@@ -43,34 +43,46 @@ func GetSpareScore(game []Frame, index int) int {
 	return GetFirstThrow(game, index)
 }
 
-func GetFrameScore(game []Frame, index int) (int, error) {
+func GetFrameError(frame Frame) error {
+	if frame.firstThrow < 0 || frame.secondThrow < 0 {
+		return fmt.Errorf(ErrNegativeFrameScore)
+	}
+	if frame.firstThrow+frame.secondThrow > StrikeScore {
+		return fmt.Errorf(ErrFrameSumInvalid, StrikeScore)
+	}
+	return nil
+}
 
+func GetBonusScore(game []Frame, index int) int {
+	frame := game[index]
+
+	strike := frame.firstThrow == StrikeScore
+	if strike {
+		return GetStrikeScore(game, index+1)
+	}
+
+	spare := frame.firstThrow+frame.secondThrow == StrikeScore
+	if spare {
+		return GetSpareScore(game, index+1)
+	}
+
+	return 0
+}
+
+func GetFrameScore(game []Frame, index int) (int, error) {
 	if index >= len(game) {
 		return 0, nil
 	}
 
 	frame := game[index]
 
-	if frame.firstThrow < 0 || frame.secondThrow < 0 {
-		return 0, fmt.Errorf(ErrNegativeFrameScore)
+	err := GetFrameError(frame)
+	if err != nil {
+		return 0, err
 	}
 
-	if frame.firstThrow+frame.secondThrow > StrikeScore {
-		return 0, fmt.Errorf(ErrFrameSumInvalid, StrikeScore)
-	}
-
-	score := 0
-	strike := frame.firstThrow == StrikeScore
-	if strike {
-		score += GetStrikeScore(game, index+1)
-	} else {
-		spare := frame.firstThrow+frame.secondThrow == StrikeScore
-		if spare {
-			score += GetSpareScore(game, index+1)
-		}
-	}
-
-	score += frame.firstThrow + frame.secondThrow
+	baseScore := frame.firstThrow + frame.secondThrow
+	score := baseScore + GetBonusScore(game, index)
 
 	return score, nil
 }
